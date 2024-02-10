@@ -174,7 +174,7 @@ const SideDrawer = () => {
                 src={user.pic} />
             </MenuButton>
             <MenuList>
-              <ProfileModal user={user}>
+              <ProfileModal key={user._id} user={user}>
                 <MenuItem>My profile</MenuItem>
               </ProfileModal>
               <MenuDivider />
