@@ -53,7 +53,7 @@ const SideDrawer = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   const logoutHandler = () => {
-    localStorage.removeItem("userinfo");
+    setChats([]);
     history.push("/");
   }
 

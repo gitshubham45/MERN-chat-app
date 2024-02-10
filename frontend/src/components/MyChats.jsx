@@ -19,7 +19,6 @@ const MyChats = ({ fetchAgain }) => {
   const toast = useToast();
 
   const fetchChats = async () => {
-    // console.log(user);
     try {
       const config = {
         headers: {
@@ -29,7 +28,6 @@ const MyChats = ({ fetchAgain }) => {
 
       const { data } = await axios.get("/api/chat", config);
       setChats(data);
-      // console.log(data);
     } catch (error) {
       toast({
         title: "Error Occured!",
@@ -43,7 +41,6 @@ const MyChats = ({ fetchAgain }) => {
   };
 
   useEffect(() => {
-    setLoggedUser(JSON.parse(localStorage.getItem("userInfo")));
     fetchChats();
     // eslint-disable-next-line
   }, [fetchAgain]);
@@ -108,7 +105,7 @@ const MyChats = ({ fetchAgain }) => {
               >
                 <Text>
                   {!chat.isGroupChat
-                    ? getSender(loggedUser, chat.users)
+                    ? getSender(user, chat.users)
                     : chat.chatName}
                 </Text>
                 {chat.latestMessage && (

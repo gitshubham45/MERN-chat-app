@@ -17,7 +17,6 @@ import {
 const ProfileModal = ({ user, children }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
 
-  // console.log(user,"space",children);
 
   return (
     <>
