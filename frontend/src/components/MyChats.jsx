@@ -12,7 +12,7 @@ import GroupChatModal from "./miscellaneous/GroupChatModal";
 
 
 const MyChats = ({ fetchAgain }) => {
-  const [loggedUser, setLoggedUser] = useState();
+ 
 
   const { selectedChat, setSelectedChat, user, chats, setChats } = ChatState();
 
