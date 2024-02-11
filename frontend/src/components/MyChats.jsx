@@ -2,7 +2,7 @@ import React from 'react';
 import { AddIcon } from "@chakra-ui/icons";
 import { useEffect, useState } from "react";
 import { useToast } from "@chakra-ui/toast";
-import axios from "axios";
+import axios from "../api/axiosConfig";
 import { ChatState } from "../Context/ChatProvider";
 import { Box, Stack, Text } from "@chakra-ui/layout";
 import ChatLoading from "./ChatLoading";

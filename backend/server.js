@@ -5,21 +5,61 @@ const connectDB = require('./config/db');
 const userRoutes = require("./routes/userRoutes");
 const chatRoutes = require("./routes/chatRoutes");
 const messageRoutes = require("./routes/messageRoutes");
-const {notFound , errorHandler} = require('./middleware/errorMiddleware');
+const { notFound, errorHandler } = require('./middleware/errorMiddleware');
+const { Socket } = require('socket.io');
+const cors = require('cors');
+
+
 
 const app = express();
 dotenv.config();
+
+app.use(cors());
 
 connectDB();
 
 app.use(express.json());
 
-app.use("/api/user" , userRoutes);
-app.use("/api/chat" , chatRoutes);
+app.use("/api/user", userRoutes);
+app.use("/api/chat", chatRoutes);
 app.use("/api/message", messageRoutes);
 
 app.use(notFound);
 app.use(errorHandler);
 
 const port = process.env.PORT || 3000;
-app.listen(port, console.log("server listening on port", port))
+const server = app.listen(port, console.log("server listening on port", port));
+
+const io = require("socket.io")(server, {
+    pingTimeout: 60000,
+    cors: {
+        origin: "http://localhost:3000",
+    },
+});
+
+io.on("connection", (socket) => {
+
+    socket.on("setup", (userData) => {
+        socket.join(userData._id);
+        console.log(userData.name, userData._id);
+        socket.emit("connected");
+    });
+
+    socket.on("join chat", (room) => {
+        socket.join(room);
+        console.log("User joined Room: " + room);
+    });
+
+    socket.on("new message", (newMessageReceived) => {
+        let chat = newMessageReceived.chat;
+
+        if(!chat.users) return console.log("chat.users not defined");
+
+
+        chat.users.forEach(user =>{
+            if(user._id=== newMessageReceived.sender._id) return;
+
+            socket.in(user._id).emit("message received", newMessageReceived);
+        });
+    })
+})
