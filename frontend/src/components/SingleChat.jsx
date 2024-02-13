@@ -30,7 +30,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
 
 
 
-  const { user, selectedChat, setSelectedChat } = ChatState();
+  const { user, selectedChat, setSelectedChat, notification, setNotification } = ChatState();
   const toast = useToast();
 
   const defaultOptions = {
@@ -118,7 +118,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
     socket = io(ENDPOINT);
     socket.emit("setup", user);
     socket.on("connected", () => setSocketConnected(true));
-    socket.on("typing", () =>{
+    socket.on("typing", () => {
       setIsTyping(true);
     });
     socket.on("stop typing", () => {
@@ -133,15 +133,19 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
     selectedChatCompare = selectedChat
   }, [selectedChat]);
 
+
   useEffect(() => {
     socket.on("message received", (newMessageReceived) => {
 
       setMessages([...messages, newMessageReceived]);
 
-      if (!selectedChatCompare || selectedChatCompare._id !== newMessageReceived.chat_id) {
-
+      if (!selectedChatCompare ) {
+        if (!notification.includes(newMessageReceived)) {
+          setNotification([newMessageReceived, ...notification]);
+          setFetchAgain(!fetchAgain);
+        }
       } else {
-     
+
       }
     })
   })
@@ -231,14 +235,14 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
             </div>
           )}
           <FormControl onKeyDown={sendMessage} isRequired mt={3}>
-            {isTyping ? 
-            <div>
-              <Lottie 
-               options={defaultOptions}
-                width={70}
-                style={{ marginBottom: 15, marginLeft: 0 }}
-               />
-            </div> : (<></>)}
+            {isTyping ?
+              <div>
+                <Lottie
+                  options={defaultOptions}
+                  width={70}
+                  style={{ marginBottom: 15, marginLeft: 0 }}
+                />
+              </div> : (<></>)}
             <Input
               variant="filled"
               bg="#5290c7"
